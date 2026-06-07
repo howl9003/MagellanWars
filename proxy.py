@@ -407,7 +407,7 @@ _FRAMESET_HTML = b"""\
   <frameset cols="172,*" rows="*" frameborder="no" border="0" framespacing="0">
     <frame src="/left.html" frameborder="no" name="left"
            marginwidth="0" marginheight="0">
-    <frame src="/archspace/login.as" frameborder="no" name="contents"
+    <frame src="/archspace/main.as" frameborder="no" name="contents"
            marginwidth="4" marginheight="4">
   </frameset>
 </frameset>
