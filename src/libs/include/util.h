@@ -449,6 +449,9 @@ class CString
 	RECYCLE(gStringZone);
 };
 
+// Free function declaration needed for modern C++ (friend injection no longer works)
+CString& format(const char *aFormat, ...);
+
 inline
 CString
 CString::clone() const

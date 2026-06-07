@@ -138,9 +138,8 @@ CNewsCenter::save_news()
 				fprintf(fp, "%s", Query->get_value());
 			}
 		}
+		fclose(fp);
 	}
-
-	fclose(fp);
 }
 
 void

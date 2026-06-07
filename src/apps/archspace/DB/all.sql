@@ -646,3 +646,98 @@ DROP TABLE IF EXISTS game_status;
 CREATE TABLE game_status (
 	last_game_time int (12) unsigned DEFAULT '0' NOT NULL
 );
+
+DROP TABLE IF EXISTS asbb_users;
+
+CREATE TABLE asbb_users (
+  user_id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_level varchar(20) DEFAULT 'PLAYER' NOT NULL,
+  dev_level int(4) DEFAULT '0' NOT NULL,
+  username varchar(80) DEFAULT '' NOT NULL,
+  user_password varchar(80) DEFAULT '' NOT NULL,
+  user_email varchar(100) DEFAULT '' NOT NULL,
+  age int(4) DEFAULT '0' NOT NULL,
+  country varchar(50) DEFAULT '' NOT NULL,
+  firstlogin int(10) DEFAULT '0' NOT NULL,
+  ip varchar(15) DEFAULT '0.0.0.0' NOT NULL,
+  user_session_time int(10) DEFAULT '0' NOT NULL,
+  PRIMARY KEY (user_id),
+  UNIQUE idx_username (username)
+);
+
+DROP TABLE IF EXISTS asbb_sessions;
+
+CREATE TABLE asbb_sessions (
+  session_id varchar(32) DEFAULT '' NOT NULL,
+  session_user_id int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  session_time int(10) DEFAULT '0' NOT NULL,
+  PRIMARY KEY (session_id),
+  KEY idx_user (session_user_id)
+);
+
+DROP TABLE IF EXISTS asbb_groups;
+
+CREATE TABLE asbb_groups (
+  group_id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  group_type tinyint(4) DEFAULT '1' NOT NULL,
+  group_name varchar(40) DEFAULT '' NOT NULL,
+  group_description varchar(255) DEFAULT '' NOT NULL,
+  group_moderator int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  group_single_user tinyint(1) DEFAULT '1' NOT NULL,
+  PRIMARY KEY (group_id)
+);
+
+DROP TABLE IF EXISTS asbb_forums;
+
+CREATE TABLE asbb_forums (
+  forum_id smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  cat_id smallint(5) UNSIGNED DEFAULT '0' NOT NULL,
+  forum_name varchar(150) DEFAULT '' NOT NULL,
+  forum_desc text,
+  forum_status tinyint(4) DEFAULT '0' NOT NULL,
+  forum_order int(10) UNSIGNED DEFAULT '1' NOT NULL,
+  forum_posts int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  forum_topics int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  forum_last_post_id int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  prune_next int(10) UNSIGNED DEFAULT '0',
+  prune_enable tinyint(1) DEFAULT '0' NOT NULL,
+  auth_view tinyint(2) DEFAULT '0' NOT NULL,
+  auth_read tinyint(2) DEFAULT '0' NOT NULL,
+  auth_post tinyint(2) DEFAULT '0' NOT NULL,
+  auth_reply tinyint(2) DEFAULT '0' NOT NULL,
+  auth_edit tinyint(2) DEFAULT '0' NOT NULL,
+  auth_delete tinyint(2) DEFAULT '0' NOT NULL,
+  auth_sticky tinyint(2) DEFAULT '0' NOT NULL,
+  auth_announce tinyint(2) DEFAULT '0' NOT NULL,
+  auth_vote tinyint(2) DEFAULT '0' NOT NULL,
+  auth_pollcreate tinyint(2) DEFAULT '0' NOT NULL,
+  auth_attachments tinyint(2) DEFAULT '0' NOT NULL,
+  PRIMARY KEY (forum_id)
+);
+
+DROP TABLE IF EXISTS asbb_auth_access;
+
+CREATE TABLE asbb_auth_access (
+  group_id int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  forum_id smallint(5) UNSIGNED DEFAULT '0' NOT NULL,
+  auth_view tinyint(1) DEFAULT '0' NOT NULL,
+  auth_read tinyint(1) DEFAULT '0' NOT NULL,
+  auth_post tinyint(1) DEFAULT '0' NOT NULL,
+  auth_reply tinyint(1) DEFAULT '0' NOT NULL,
+  auth_edit tinyint(1) DEFAULT '0' NOT NULL,
+  auth_delete tinyint(1) DEFAULT '0' NOT NULL,
+  auth_sticky tinyint(1) DEFAULT '0' NOT NULL,
+  auth_announce tinyint(1) DEFAULT '0' NOT NULL,
+  auth_vote tinyint(1) DEFAULT '0' NOT NULL,
+  auth_pollcreate tinyint(1) DEFAULT '0' NOT NULL,
+  auth_attachments tinyint(1) DEFAULT '0' NOT NULL,
+  auth_mod tinyint(1) DEFAULT '0' NOT NULL
+);
+
+DROP TABLE IF EXISTS asbb_user_group;
+
+CREATE TABLE asbb_user_group (
+  group_id int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  user_id int(10) UNSIGNED DEFAULT '0' NOT NULL,
+  user_pending tinyint(1) DEFAULT '1' NOT NULL
+);

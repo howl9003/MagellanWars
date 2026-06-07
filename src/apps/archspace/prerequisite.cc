@@ -738,7 +738,7 @@ CPrerequisiteList::tech_description()
 	if (!Path)
 	{
 		SLOG("could not find path of encyclopedia"); 
-		return false;
+		return NULL;
 	}
  
 	CString
@@ -785,7 +785,7 @@ CPrerequisiteList::tech_description(CPlayer *aPlayer)
 	if (!Path)
 	{
 		SLOG("could not find path of encyclopedia"); 
-		return false;
+		return NULL;
 	}
 
 	CString
@@ -847,7 +847,7 @@ CPrerequisiteList::race_description()
 	if (!Path)
 	{
 		SLOG("could not find path of encyclopedia"); 
-		return false;
+		return NULL;
 	}
  
 
@@ -895,7 +895,7 @@ CPrerequisiteList::project_description()
 	if (!Path)
 	{
 		SLOG("could not find path of encyclopedia"); 
-		return false;
+		return NULL;
 	}
 
 	CString
