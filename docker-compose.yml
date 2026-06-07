@@ -1,5 +1,7 @@
 version: "3.8"
 
+name: vibespace
+
 services:
   db:
     image: mysql:5.7

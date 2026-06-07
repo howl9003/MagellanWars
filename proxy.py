@@ -322,7 +322,7 @@ def _make_placeholder_svg(url_path):
     if name in ('main_img', 'back_menu', 'main_imperial_happening',
                 'main_system_advisory', 'loading_ani'):
         labels = {
-            'main_img':               ('Magellan Wars', 400, 80),
+            'main_img':               ('Vibespace', 400, 80),
             'back_menu':              ('≡ Menu',          80, 24),
             'main_imperial_happening':('Imperial News',  200, 30),
             'main_system_advisory':   ('System Advisory',200, 30),
@@ -397,7 +397,7 @@ _FRAMESET_HTML = b"""\
 <!DOCTYPE html>
 <html>
 <head>
-<title>Magellan Wars</title>
+<title>Vibespace</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Cache-Control" content="no-cache">
 </head>
@@ -453,7 +453,7 @@ _UP_FRAME_HTML = b"""\
 <body>
 <div class="header">
   <div>
-    <div class="title">MAGELLAN WARS</div>
+    <div class="title">VIBESPACE</div>
     <div class="subtitle">SPACE STRATEGY &nbsp;|&nbsp; ARCHSPACE ENGINE</div>
   </div>
   <div class="nav-links">
@@ -695,7 +695,7 @@ def _make_session_id():
 
 
 _LOGIN_TEMPLATE = (
-    b'<!DOCTYPE html><html><head><title>Archspace Login</title>'
+    b'<!DOCTYPE html><html><head><title>Vibespace Login</title>'
     b'<style>'
     b'body{background:#000;color:#ccc;font-family:Arial,sans-serif;'
     b'display:flex;justify-content:center;align-items:center;height:100vh;margin:0}'
@@ -711,7 +711,7 @@ _LOGIN_TEMPLATE = (
     b'a{color:#88f}'
     b'</style></head>'
     b'<body><div class="box">'
-    b'<h2>Archspace</h2>'
+    b'<h2>Vibespace</h2>'
     b'@@MSG@@'
     b'<form method="post" action="/login">'
     b'<label>Username</label><input type="text" name="username" autofocus>'
@@ -723,7 +723,7 @@ _LOGIN_TEMPLATE = (
 )
 
 _REGISTER_TEMPLATE = (
-    b'<!DOCTYPE html><html><head><title>Archspace Register</title>'
+    b'<!DOCTYPE html><html><head><title>Vibespace Register</title>'
     b'<style>'
     b'body{background:#000;color:#ccc;font-family:Arial,sans-serif;'
     b'display:flex;justify-content:center;align-items:center;height:100vh;margin:0}'

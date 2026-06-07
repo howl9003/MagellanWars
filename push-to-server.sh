@@ -14,13 +14,18 @@ REMOTE_DIR="~/MagellanWars"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=no"
 
 echo "=== Uploading project to ${SSH_USER}@${SERVER_IP}:${REMOTE_DIR} ==="
-rsync -avz --progress \
-  --exclude '.git' \
-  --exclude '*.o' \
-  --exclude 'src/apps/archspace/*.o' \
-  -e "ssh $SSH_OPTS" \
-  "$(dirname "$0")/" \
-  "${SSH_USER}@${SERVER_IP}:${REMOTE_DIR}/"
+# Create remote directory first
+ssh $SSH_OPTS ${SSH_USER}@${SERVER_IP} "mkdir -p ${REMOTE_DIR}"
+
+# Create a tar archive (excluding .git and .o files) and pipe it to the server
+tar --exclude='.git' \
+    --exclude='*.o' \
+    -czf - \
+    -C "$(dirname "$0")" \
+    . \
+  | ssh $SSH_OPTS ${SSH_USER}@${SERVER_IP} "tar -xzf - -C ${REMOTE_DIR}"
+
+echo "Upload complete."
 
 echo ""
 echo "=== Running server setup (first time only) ==="
