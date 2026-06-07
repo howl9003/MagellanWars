@@ -1,0 +1,118 @@
+/* Archspace game stylesheet */
+body {
+    background-color: #000000;
+    color: #cccccc;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+a { color: #9999cc; text-decoration: none; }
+a:hover { color: #ccccff; text-decoration: underline; }
+a:visited { color: #777799; }
+
+.maintext {
+    color: #cccccc;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-bold {
+    color: #cccccc;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tabletxt {
+    color: #aaaaaa;
+    font-size: 11px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #0a0013;
+}
+
+.tabletxth, .tabletxtH {
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #111133;
+}
+
+.white {
+    color: #ffffff;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.sub_title {
+    color: #9999ff;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #110022;
+}
+
+.clTop {
+    color: #bbbbff;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #000033;
+}
+
+.clSub {
+    color: #aaaacc;
+    font-size: 11px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #000022;
+}
+
+.narrow {
+    font-size: 10px;
+    color: #999999;
+}
+
+.mainttext { color: #cccccc; font-size: 12px; }
+
+/* Input fields */
+.newInput {
+    background-color: #111122;
+    color: #cccccc;
+    border: 1px solid #445566;
+    font-size: 12px;
+    padding: 2px;
+}
+
+.newRadio { cursor: pointer; }
+
+/* Tables */
+table { border-collapse: collapse; }
+th {
+    background-color: #111133;
+    color: #aaaaff;
+    font-size: 11px;
+    padding: 3px 6px;
+}
+td { padding: 2px 4px; }
+
+/* Headings */
+h1, h2, h3 { color: #8888ff; }
+
+/* Form elements */
+input[type=text], input[type=password], textarea, select {
+    background-color: #111122;
+    color: #cccccc;
+    border: 1px solid #445566;
+}
+input[type=submit], input[type=button] {
+    background-color: #223355;
+    color: #cccccc;
+    border: 1px solid #446688;
+    cursor: pointer;
+    padding: 3px 8px;
+}
+input[type=submit]:hover, input[type=button]:hover {
+    background-color: #334466;
+}

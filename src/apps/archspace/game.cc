@@ -180,35 +180,38 @@ CGame::initialize(CIniFile *aConfig)
 	Temp = mConfig->get_integer("Game", "CombatReturnRate", -1);
 	if (Temp > 0 && Temp < 1000) CGame::mCombatReturnRate = Temp;
 
+	// NOTE: use > 0, not >= -1. get_integer() returns -1 when the key is absent,
+	// and -1 >= -1 is true — which would set the period to -1, making get_period()
+	// return -300 (negative), causing every action to expire immediately.
 	Temp = mConfig->get_integer("Game", "PeriodPlayerCouncilDonation", -1);
-	if (Temp >= -1) CAction::mPeriodPlayerCouncilDonation = Temp;
+	if (Temp > 0) CAction::mPeriodPlayerCouncilDonation = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodPlayerBreakPact", -1);
-	if (Temp >= -1) CAction::mPeriodPlayerBreakPact = Temp;
+	if (Temp > 0) CAction::mPeriodPlayerBreakPact = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodPlayerBreakAlly", -1);
-	if (Temp >= -1) CAction::mPeriodPlayerBreakAlly = Temp;
+	if (Temp > 0) CAction::mPeriodPlayerBreakAlly = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodPlayerDeclareHostile", -1);
-	if (Temp >= -1) CAction::mPeriodPlayerDeclareHostile = Temp;
+	if (Temp > 0) CAction::mPeriodPlayerDeclareHostile = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodCouncilDeclareTotalWar", -1);
-	if (Temp >= -1) CAction::mPeriodCouncilDeclareTotalWar = Temp;
+	if (Temp > 0) CAction::mPeriodCouncilDeclareTotalWar = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodCouncilDeclareWar", -1);
-	if (Temp >= -1) CAction::mPeriodCouncilDeclareWar = Temp;
+	if (Temp > 0) CAction::mPeriodCouncilDeclareWar = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodCouncilBreakPact", -1);
-	if (Temp >= -1) CAction::mPeriodCouncilBreakPact = Temp;
+	if (Temp > 0) CAction::mPeriodCouncilBreakPact = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodCouncilBreakAlly", -1);
-	if (Temp >= -1) CAction::mPeriodCouncilBreakAlly = Temp;
+	if (Temp > 0) CAction::mPeriodCouncilBreakAlly = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodCouncilImproveRelation", -1);
-	if (Temp >= -1) CAction::mPeriodCouncilImproveRelation = Temp;
+	if (Temp > 0) CAction::mPeriodCouncilImproveRelation = Temp;
 
 	Temp = mConfig->get_integer("Game", "PeriodCouncilMergingOffer", -1);
-	if (Temp >= -1) CAction::mPeriodCouncilMergingOffer = Temp;
+	if (Temp > 0) CAction::mPeriodCouncilMergingOffer = Temp;
 
 	Temp = mConfig->get_integer("Game", "HonorIncreaseTurns", -1);
 	if (Temp > 0) CPlayer::mHonorIncreaseTurns = Temp;
