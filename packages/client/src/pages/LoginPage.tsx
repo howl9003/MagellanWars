@@ -32,7 +32,7 @@ export function LoginPage() {
       <div style={{ width: 360 }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{ fontSize: 11, letterSpacing: '0.4em', color: 'var(--accent)', textShadow: 'var(--accent-glow)', textTransform: 'uppercase', marginBottom: 8 }}>
-            ◈ MagellanWars ◈
+            ◈ Vibespace ◈
           </div>
           <div style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.15em' }}>
             GALACTIC COMMAND INTERFACE v2.0

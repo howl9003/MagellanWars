@@ -39,7 +39,7 @@ function Nav() {
 
   return (
     <nav className="nav">
-      <NavLink to="/" className="nav__brand">MagellanWars</NavLink>
+      <NavLink to="/" className="nav__brand">Vibespace</NavLink>
       <div className="nav__sep" />
       {NAV_ITEMS.map((item) => (
         <NavLink key={item.to} to={item.to} end={item.to === '/'} className={({ isActive }) => `nav__link${isActive ? ' active' : ''}`}
