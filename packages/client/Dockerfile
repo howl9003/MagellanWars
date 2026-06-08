@@ -13,6 +13,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
 COPY --from=deps /app/packages/client/node_modules ./packages/client/node_modules
+COPY package.json pnpm-workspace.yaml ./
 COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY packages/client ./packages/client
