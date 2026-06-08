@@ -1,0 +1,41 @@
+{
+  "name": "@magellanwars/server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc --project tsconfig.json && tsc-alias",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.0",
+    "@fastify/jwt": "^9.0.0",
+    "@fastify/websocket": "^11.0.0",
+    "@magellanwars/shared": "workspace:*",
+    "@prisma/client": "^6.0.0",
+    "bcrypt": "^5.1.0",
+    "fastify": "^5.0.0",
+    "node-cron": "^3.0.0",
+    "socket.io": "^4.8.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.0",
+    "prisma": "^6.0.0",
+    "tsc-alias": "^1.8.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
