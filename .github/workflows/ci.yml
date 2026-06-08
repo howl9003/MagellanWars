@@ -20,7 +20,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm -r build --filter @magellanwars/shared
       - run: pnpm typecheck
@@ -34,7 +33,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm lint
 
@@ -63,7 +61,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm --filter @magellanwars/server db:generate
       - run: pnpm --filter @magellanwars/server db:push
@@ -79,6 +76,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm build
