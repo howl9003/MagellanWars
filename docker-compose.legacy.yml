@@ -1,0 +1,82 @@
+# Legacy C++ + MySQL 5.7 test stack
+# Runs in parallel with the new TypeScript stack without any conflicts:
+#   - separate Docker project name  → separate network, no hostname clashes
+#   - separate named volumes        → DB data fully isolated
+#   - proxy exposed on host :8081   → access at http://playvibespace.online:8081
+#
+# Prerequisites:
+#   - Open port 8081 in the EC2 security group (inbound TCP)
+#
+# Start:  docker compose -f docker-compose.legacy.yml up -d
+# Stop:   docker compose -f docker-compose.legacy.yml down
+# Logs:   docker compose -f docker-compose.legacy.yml logs -f
+
+name: vibespace-legacy
+
+services:
+  db:
+    image: mysql:5.7
+    command: >
+      --sql-mode=""
+      --character-set-server=latin1
+      --collation-server=latin1_swedish_ci
+      --innodb-buffer-pool-size=128M
+      --key-buffer-size=32M
+      --max-connections=50
+      --tmp-table-size=32M
+      --max-heap-table-size=32M
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${LEGACY_DB_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: Archspace2
+      MYSQL_USER: archspace
+      MYSQL_PASSWORD: ${LEGACY_DB_PASSWORD:-archspace}
+    volumes:
+      - legacy_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uarchspace", "-p${LEGACY_DB_PASSWORD:-archspace}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  archspace:
+    build: .
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: archspace
+      DB_PASS: ${LEGACY_DB_PASSWORD:-archspace}
+      DB_NAME: Archspace2
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./archspace.config:/etc/archspace/archspace.config:ro
+      - legacy_archspace_logs:/var/log/archspace
+      - ./encyclopedia_data:/var/archspace/web/encyclopedia
+
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.proxy
+    restart: always
+    ports:
+      - "8081:8080"
+    environment:
+      ARCHSPACE_HOST: archspace
+      ARCHSPACE_PORT: 12345
+      PROXY_PORT: 8080
+      DB_HOST: db
+      DB_USER: archspace
+      DB_PASS: ${LEGACY_DB_PASSWORD:-archspace}
+      DB_NAME: Archspace2
+    volumes:
+      - ./src/web:/var/archspace/web
+      - ./encyclopedia_data:/var/archspace/web/encyclopedia
+    depends_on:
+      - archspace
+      - db
+
+volumes:
+  legacy_db_data:
+  legacy_archspace_logs:
