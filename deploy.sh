@@ -11,11 +11,8 @@ if docker compose ps --quiet 2>/dev/null | grep -q .; then
     docker compose down
 fi
 
-echo "=== Building server image ==="
-docker compose -f docker-compose.new.yml build server
-
-echo "=== Building client image ==="
-docker compose -f docker-compose.new.yml build client
+echo "=== Pulling pre-built images from GitHub Container Registry ==="
+docker compose -f docker-compose.new.yml pull server client
 
 echo "=== Starting new stack ==="
 docker compose -f docker-compose.new.yml up -d

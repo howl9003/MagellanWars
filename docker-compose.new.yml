@@ -17,6 +17,7 @@ services:
       retries: 10
 
   server:
+    image: ghcr.io/howl9003/vibespace-server:latest
     build:
       context: .
       dockerfile: packages/server/Dockerfile
@@ -32,6 +33,7 @@ services:
         condition: service_healthy
 
   client:
+    image: ghcr.io/howl9003/vibespace-client:latest
     build:
       context: .
       dockerfile: packages/client/Dockerfile
