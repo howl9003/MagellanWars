@@ -28,11 +28,6 @@ const ACTION = {
 const COOLDOWN_MAJOR_MS = 4.8 * 3600 * 1000;
 const COOLDOWN_MINOR_MS = 1.6 * 3600 * 1000;
 
-const sendMessageSchema = z.object({
-  receiverId: z.number().int().positive(),
-  type: z.number().int().min(1).max(10),
-});
-
 const setRelationSchema = z.object({
   targetPlayerId: z.number().int().positive(),
   action: z.number().int(),

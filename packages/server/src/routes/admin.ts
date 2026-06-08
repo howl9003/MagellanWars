@@ -1,7 +1,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../db/index.js';
-import { requireAdmin, getPayload } from '../middleware/auth.js';
+import { requireAdmin } from '../middleware/auth.js';
 import { processTurn } from '../game/turn.js';
 
 export const adminRoutes: FastifyPluginAsync = async (app) => {

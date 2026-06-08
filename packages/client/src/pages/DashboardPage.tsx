@@ -4,8 +4,14 @@ import { api } from '../lib/api.js';
 import type { ApiResponse, DashboardResponse } from '@magellanwars/shared';
 import { PageHeader, Stat, ProgressBar, Badge, SkeletonCard, SectionTitle } from '../components/ui.js';
 
-const RACE_NAMES = ['Human', 'Targoid', 'Buckaneer', 'Tecanoid', 'Evintos', 'Agerus', 'Bosalian', 'Xeloss'];
-const MISSION_LABELS: Record<number, string> = { 0: 'Standby', 1: 'Training', 2: 'Patrol', 3: 'Support', 4: 'Expedition', 5: 'Siege', 6: 'Dispatch' };
+const RACE_NAMES: Record<string, string> = {
+  human: 'Human', noxian: 'Noxian', cephean: 'Cephean', torean: 'Torean',
+  agerus: 'Agerus', targoid: 'Targoid', krill: 'Krill', xerusian: 'Xerusian',
+};
+const MISSION_LABELS: Record<string, string> = {
+  standby: 'Standby', training: 'Training', patrol: 'Patrol',
+  expedition: 'Expedition', attack: 'Attack', defense: 'Defense', alliance_dispatch: 'Alliance Dispatch',
+};
 
 function honourColor(h: number) {
   if (h >= 70) return 'var(--green)';
@@ -40,7 +46,7 @@ export function DashboardPage() {
     <div>
       <PageHeader
         title={`Commander ${player?.name ?? '...'}`}
-        subtitle={`${RACE_NAMES[player?.race ?? 0] ?? 'Unknown'} Empire · Turn ${player?.turn ?? 0}`}
+        subtitle={`${RACE_NAMES[player?.race ?? 'human'] ?? 'Unknown'} Empire · Turn ${player?.turn ?? 0}`}
         actions={<span className="text-xs text-muted" style={{ letterSpacing: '0.1em' }}>RATING <span className="text-accent">{player?.rating ?? 2000}</span></span>}
       />
 
@@ -90,7 +96,7 @@ export function DashboardPage() {
                     <tr key={f.id}>
                       <td className="text-bright">{f.name}</td>
                       <td className="num text-xs">{f.currentShips}<span className="text-muted">/{f.maxShips}</span></td>
-                      <td><Badge variant={f.mission === 0 ? 'muted' : 'accent'}>{MISSION_LABELS[f.mission] ?? 'Unknown'}</Badge></td>
+                      <td><Badge variant={f.mission === 'standby' ? 'muted' : 'accent'}>{MISSION_LABELS[f.mission] ?? 'Unknown'}</Badge></td>
                     </tr>
                   ))}
                 </tbody>

@@ -12,7 +12,7 @@ interface PlayerMe {
 
 const RACE_NAMES = ['Human', 'Targoid', 'Buckaneer', 'Tecanoid', 'Evintos', 'Agerus', 'Bosalian', 'Xeloss'];
 
-const HOTKEYS = [
+const HOTKEYS: [string, string][] = [
   ['E', '/'],         ['T', '/tech'],    ['S', '/ships'],
   ['W', '/warfare'],  ['Y', '/spy'],     ['P', '/projects'],
   ['D', '/diplomacy'],['C', '/council'], ['B', '/battles'],
