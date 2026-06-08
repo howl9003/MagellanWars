@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api.js';
-import { PageHeader, Card, Badge, SectionTitle, SkeletonCard, Empty } from '../components/ui.js';
+import { PageHeader, Card, Badge, SkeletonCard, Empty } from '../components/ui.js';
 import { useToastFn } from '../hooks/useToastContext.js';
 
 interface Auction {

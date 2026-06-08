@@ -8,7 +8,6 @@ import {
   Stat,
   DataTable,
   Badge,
-  SkeletonTable,
   Empty,
 } from '../components/ui.js';
 import { useToastFn } from '../hooks/useToastContext.js';
@@ -53,11 +52,6 @@ export function CouncilPage() {
       setCreateMode(false);
       toast('Council founded successfully!', 'success');
     },
-  });
-
-  const leaveCouncil = useMutation({
-    mutationFn: () => api.get('/council/me/leave'), // DELETE — we'd need api.delete
-    onSuccess: () => { void qc.invalidateQueries({ queryKey: ['council'] }); },
   });
 
   const donate = useMutation({
@@ -205,7 +199,7 @@ export function CouncilPage() {
                 notInCouncil ? (
                   <button
                     className="btn btn--sm btn--primary"
-                    onClick={() => api.post(`/council/${row.id}/apply`, {})}
+                    onClick={() => { void api.post(`/council/${row.id}/apply`, {}); }}
                   >
                     Apply
                   </button>

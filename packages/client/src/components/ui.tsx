@@ -161,7 +161,13 @@ export interface Column<T> {
   render?: (row: T) => ReactNode;
 }
 
-export function DataTable<T extends Record<string, unknown>>({ columns, rows, emptyMsg = 'No data.' }: {
+function cellStr(v: unknown): string {
+  if (v == null) return '';
+  if (typeof v === 'object') return '';
+  return String(v);
+}
+
+export function DataTable<T extends object>({ columns, rows, emptyMsg = 'No data.' }: {
   columns: Column<T>[];
   rows: T[];
   emptyMsg?: string;
@@ -185,7 +191,7 @@ export function DataTable<T extends Record<string, unknown>>({ columns, rows, em
             <tr key={i}>
               {columns.map((c) => (
                 <td key={c.key} className={c.right ? 'num' : ''}>
-                  {c.render ? c.render(row) : String(row[c.key] ?? '')}
+                  {c.render ? c.render(row) : cellStr((row as Record<string, unknown>)[c.key])}
                 </td>
               ))}
             </tr>

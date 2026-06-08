@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api.js';
 import type { ApiResponse, BattleListResponse } from '@magellanwars/shared';
-import { PageHeader, SkeletonTable, DataTable, Badge } from '../components/ui.js';
+import { PageHeader, SkeletonTable, DataTable } from '../components/ui.js';
 
 export function BattlesPage() {
   const { data, isLoading } = useQuery({
