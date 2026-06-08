@@ -19,6 +19,7 @@
   "dependencies": {
     "@fastify/cors": "^10.0.0",
     "@fastify/jwt": "^9.0.0",
+    "@fastify/sensible": "^6.0.0",
     "@fastify/websocket": "^11.0.0",
     "@magellanwars/shared": "workspace:*",
     "@prisma/client": "^6.0.0",

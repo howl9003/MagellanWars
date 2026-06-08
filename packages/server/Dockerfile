@@ -18,8 +18,8 @@ COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY packages/server ./packages/server
 RUN pnpm --filter @magellanwars/shared build
-RUN pnpm --filter @magellanwars/server build
 RUN pnpm --filter @magellanwars/server db:generate
+RUN pnpm --filter @magellanwars/server build
 
 FROM node:22-alpine AS runner
 WORKDIR /app

@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
+import sensible from '@fastify/sensible';
 import websocket from '@fastify/websocket';
 import { authRoutes } from './routes/auth.js';
 import { playerRoutes } from './routes/player.js';
@@ -25,6 +26,8 @@ export function buildApp() {
       level: process.env['LOG_LEVEL'] ?? 'info',
     },
   });
+
+  void app.register(sensible);
 
   void app.register(cors, {
     origin: process.env['CLIENT_ORIGIN'] ?? 'http://localhost:5173',
