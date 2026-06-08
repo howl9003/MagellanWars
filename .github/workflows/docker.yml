@@ -10,9 +10,41 @@ env:
   OWNER: ${{ github.repository_owner }}
 
 jobs:
+  # Run TypeScript compilation outside Docker first so errors are visible
+  compile:
+    name: Compile TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build shared
+        run: pnpm --filter @magellanwars/shared build
+
+      - name: Generate Prisma client
+        run: pnpm --filter @magellanwars/server db:generate
+
+      - name: Build server
+        run: pnpm --filter @magellanwars/server build
+
+      - name: Build client
+        run: pnpm --filter @magellanwars/client build
+
   build-server:
     name: Build server image
     runs-on: ubuntu-latest
+    needs: compile
     permissions:
       contents: read
       packages: write
@@ -42,6 +74,7 @@ jobs:
   build-client:
     name: Build client image
     runs-on: ubuntu-latest
+    needs: compile
     permissions:
       contents: read
       packages: write
