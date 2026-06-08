@@ -1,0 +1,536 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique @db.VarChar(80)
+  password   String   @db.VarChar(255)
+  email      String   @db.VarChar(100)
+  userLevel  String   @default("PLAYER") @db.VarChar(20)
+  devLevel   Int      @default(0)
+  country    String   @default("") @db.VarChar(50)
+  firstLogin DateTime @default(now())
+  lastIp     String   @default("0.0.0.0") @db.VarChar(45)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  sessions Session[]
+  player   Player?
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @db.VarChar(64)
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ─── World ───────────────────────────────────────────────────────────────────
+
+model Cluster {
+  id         Int    @id
+  name       String @db.VarChar(50)
+  nameNumber Int    @default(0)
+
+  planets Planet[]
+  players Player[]
+
+  @@map("cluster")
+}
+
+// ─── Player ──────────────────────────────────────────────────────────────────
+
+model Player {
+  id                    Int      @id @default(autoincrement())
+  userId                Int      @unique
+  name                  String   @db.VarChar(30)
+  homeClusterId         Int
+  lastLogin             DateTime @default(now())
+  lastLoginIp           String   @default("0.0.0.0") @db.VarChar(45)
+  mode                  Int      @default(0)
+  race                  Int      @default(0)
+  honor                 Int      @default(50)
+  rating                Int      @default(2000)
+  researchInvest        Int      @default(0)
+  tick                  Int      @default(0)
+  turn                  Int      @default(0)
+  production            Int      @default(0)
+  shipProduction        Int      @default(0)
+  investedShipProduction Int     @default(0)
+  research              Int      @default(0)
+  researchTechId        Int      @default(0)
+  admiralTimer          Int      @default(0)
+  councilId             Int?
+  councilVote           Int      @default(0)
+  councilProduction     Int      @default(0)
+  councilDonation       Int      @default(0)
+  securityLevel         Int      @default(1)
+  alertness             Int      @default(0)
+  empireRelation        Int      @default(50)
+  protectedMode         Boolean  @default(false)
+  protectedUntil        DateTime?
+  admissionTimeLimit    Int      @default(-1)
+  honorTimer            Int      @default(0)
+  isAi                  Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user         User              @relation(fields: [userId], references: [id])
+  homeCluster  Cluster           @relation(fields: [homeClusterId], references: [id])
+  council      Council?          @relation(fields: [councilId], references: [id])
+  planets      Planet[]
+  fleets       Fleet[]
+  admirals     Admiral[]
+  techs        PlayerTech[]
+  projects     PlayerProject[]
+  effects      PlayerEffect[]
+  events       PlayerEvent[]
+  actions      PlayerAction[]
+  admissions   Admission[]
+  bountiesPlaced   Bounty[]     @relation("BountySource")
+  bountiesReceived Bounty[]     @relation("BountyTarget")
+  shipDesigns      ShipDesign[]
+  shipBuildQueue   ShipBuildingQueue[]
+  dockedShips      DockedShip[]
+  defensePlans     DefensePlan[]
+
+  @@index([name])
+  @@map("player")
+}
+
+// ─── Planets ─────────────────────────────────────────────────────────────────
+
+model Planet {
+  id                    Int     @id @default(autoincrement())
+  clusterId             Int
+  ownerId               Int
+  order                 Int
+  name                  String  @db.VarChar(50)
+  attribute             String  @default("") @db.VarChar(8)
+  population            Int     @default(0)
+  buildingFactory       Int     @default(0)
+  buildingMilitaryBase  Int     @default(0)
+  buildingResearchLab   Int     @default(0)
+  progressFactory       Int     @default(0)
+  progressMilitaryBase  Int     @default(0)
+  progressResearchLab   Int     @default(0)
+  ratioFactory          Int     @default(40)
+  ratioMilitaryBase     Int     @default(30)
+  ratioResearchLab      Int     @default(30)
+  atmosphere            String  @default("") @db.VarChar(8)
+  temperature           Int     @default(300)
+  size                  Int     @default(2)
+  resource              Int     @default(2)
+  gravity               Float   @default(1.0)
+  investment            Int     @default(0)
+  terraforming          Int     @default(0)
+  terraformingTimer     Int     @default(0)
+
+  cluster Cluster @relation(fields: [clusterId], references: [id])
+  owner   Player  @relation(fields: [ownerId], references: [id])
+
+  @@index([ownerId])
+  @@map("planet")
+}
+
+// ─── Technology ──────────────────────────────────────────────────────────────
+
+model PlayerTech {
+  playerId  Int
+  techId    Int
+  learnedAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@id([playerId, techId])
+  @@map("player_tech")
+}
+
+model PlayerProject {
+  playerId  Int
+  projectId Int
+  type      Int
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@id([playerId, projectId])
+  @@map("player_project")
+}
+
+// ─── Fleet & Combat ──────────────────────────────────────────────────────────
+
+model Admiral {
+  id               BigInt  @id @default(autoincrement())
+  ownerId          Int
+  race             Int     @default(0)
+  type             Int     @default(0)
+  name             String  @db.VarChar(40)
+  exp              Int     @default(0)
+  level            Int     @default(0)
+  fleetNumber      Int     @default(0)
+  armadaCommanding Boolean @default(false)
+  fleetCommanding  Int     @default(-10)
+  efficiency       Int     @default(-10)
+  offense          Int     @default(-10)
+  offenseUpLevel   Int     @default(-10)
+  defense          Int     @default(-10)
+  defenseUpLevel   Int     @default(-10)
+  maneuver         Int     @default(-10)
+  maneuverUpLevel  Int     @default(-10)
+  detection        Int     @default(-10)
+  detectionUpLevel Int     @default(-10)
+  commonAbility    Int     @default(-10)
+  raceAbility      Int     @default(-10)
+
+  owner  Player  @relation(fields: [ownerId], references: [id])
+  fleets Fleet[]
+
+  @@index([ownerId])
+  @@map("admiral")
+}
+
+model Fleet {
+  ownerId              Int
+  id                   Int
+  name                 String @db.VarChar(40)
+  admiralId            BigInt?
+  exp                  Int    @default(0)
+  status               Int    @default(0)
+  maxShips             Int    @default(0)
+  currentShips         Int    @default(0)
+  shipClass            Int    @default(0)
+  mission              Int    @default(0)
+  missionTarget        Int    @default(0)
+  missionTerminateTime Int    @default(0)
+  killedShips          Int    @default(0)
+  killedFleets         Int    @default(0)
+
+  owner   Player   @relation(fields: [ownerId], references: [id])
+  admiral Admiral? @relation(fields: [admiralId], references: [id])
+
+  @@id([ownerId, id])
+  @@map("fleet")
+}
+
+model BattleRecord {
+  id                  Int      @id @default(autoincrement())
+  attackerId          Int
+  defenderId          Int
+  attackerName        String   @db.VarChar(30)
+  defenderName        String   @db.VarChar(30)
+  attackerRace        Int
+  defenderRace        Int
+  attackerCouncil     Int      @default(0)
+  defenderCouncil     Int      @default(0)
+  time                DateTime
+  warType             Int      @default(0)
+  isDraw              Boolean  @default(false)
+  winner              Int
+  planetId            Int      @default(0)
+  battleFieldName     String   @default("") @db.VarChar(50)
+  attackerGain        String?  @db.Text
+  attackerLoseFleet   String?  @db.Text
+  attackerLoseAdmiral String?  @db.Text
+  defenderLoseFleet   String?  @db.Text
+  defenderLoseAdmiral String?  @db.Text
+  recordFile          String   @default("") @db.VarChar(50)
+  thereWasBattle      Boolean  @default(false)
+
+  @@index([attackerId])
+  @@index([defenderId])
+  @@map("battle_record")
+}
+
+// ─── Diplomacy ───────────────────────────────────────────────────────────────
+
+model PlayerRelation {
+  id       Int      @id @default(autoincrement())
+  player1  Int
+  player2  Int
+  relation Int      @default(0)
+  time     DateTime @default(now())
+
+  @@unique([player1, player2])
+  @@index([player1])
+  @@index([player2])
+  @@map("player_relation")
+}
+
+model CouncilRelation {
+  id       Int      @id @default(autoincrement())
+  council1 Int
+  council2 Int
+  relation Int      @default(0)
+  time     DateTime @default(now())
+
+  @@unique([council1, council2])
+  @@index([council1])
+  @@map("council_relation")
+}
+
+model DiplomaticMessage {
+  id         Int      @id @default(autoincrement())
+  type       Int      @default(0)
+  senderId   Int
+  receiverId Int
+  time       DateTime @default(now())
+  status     Int      @default(0)
+
+  @@index([receiverId])
+  @@map("diplomatic_message")
+}
+
+model CouncilMessage {
+  id         Int      @id @default(autoincrement())
+  type       Int      @default(0)
+  senderId   Int
+  receiverId Int
+  time       DateTime @default(now())
+  status     Int      @default(0)
+
+  @@index([receiverId])
+  @@map("council_message")
+}
+
+model PlayerAction {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime @default(now())
+  action    Int
+  ownerId   Int
+  argument  Int      @default(0)
+
+  owner Player @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("player_action")
+}
+
+model CouncilAction {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime @default(now())
+  action    Int
+  ownerId   Int
+  argument  Int      @default(0)
+
+  @@index([ownerId])
+  @@map("council_action")
+}
+
+// ─── Council / Alliance ──────────────────────────────────────────────────────
+
+model Council {
+  id               Int     @id @default(autoincrement())
+  speakerId        Int
+  name             String  @db.VarChar(40)
+  slogan           String  @default("") @db.VarChar(255)
+  production       Int     @default(0)
+  honor            Int     @default(50)
+  autoAssign       Boolean @default(true)
+  homeClusterId    Int     @default(0)
+  mergePenaltyTime Int     @default(-1)
+  secondarySpeaker Int     @default(0)
+
+  members    Player[]
+  admissions Admission[]
+
+  @@map("council")
+}
+
+model Admission {
+  playerId  Int
+  councilId Int
+  status    Int      @default(0)
+  time      DateTime @default(now())
+  content   String?  @db.Text
+
+  player  Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  council Council @relation(fields: [councilId], references: [id], onDelete: Cascade)
+
+  @@id([playerId, councilId])
+  @@map("admission")
+}
+
+// ─── Effects & Events ────────────────────────────────────────────────────────
+
+model PlayerEffect {
+  id         Int @id @default(autoincrement())
+  ownerId    Int
+  life       Int
+  type       Int
+  target     Int @default(0)
+  apply      Int @default(0)
+  arg1       Int @default(0)
+  arg2       Int @default(0)
+  sourceType Int @default(0)
+  source     Int @default(0)
+
+  owner Player @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("player_effect")
+}
+
+model PlayerEvent {
+  id       Int      @id @default(autoincrement())
+  ownerId  Int
+  event    Int
+  life     Int
+  time     DateTime @default(now())
+  answered Boolean  @default(false)
+
+  owner Player @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("player_event")
+}
+
+// ─── Black Market ────────────────────────────────────────────────────────────
+
+model Blackmarket {
+  id             Int      @id @default(autoincrement())
+  type           Int
+  item           Int
+  winner         Int      @default(0)
+  price          Int      @default(0)
+  openedAt       DateTime @default(now())
+  expireAt       DateTime
+  closedAt       DateTime?
+  numberOfPlanet Int      @default(0)
+
+  bids BlackmarketBid[]
+
+  @@map("blackmarket")
+}
+
+model BlackmarketBid {
+  id          Int      @id @default(autoincrement())
+  auctionId   Int
+  bidderId    Int
+  amount      Int
+  placedAt    DateTime @default(now())
+
+  auction Blackmarket @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+
+  @@index([auctionId])
+  @@map("blackmarket_bid")
+}
+
+// ─── Bounty ──────────────────────────────────────────────────────────────────
+
+model Bounty {
+  id             Int      @id @default(autoincrement())
+  sourcePlayerId Int
+  targetPlayerId Int
+  empirePoints   Int      @default(0)
+  expireTime     DateTime
+
+  sourcePlayer Player @relation("BountySource", fields: [sourcePlayerId], references: [id])
+  targetPlayer Player @relation("BountyTarget", fields: [targetPlayerId], references: [id])
+
+  @@index([targetPlayerId])
+  @@map("bounty")
+}
+
+// ─── Ship Design & Building ───────────────────────────────────────────────────
+
+model ShipDesign {
+  id          Int    @id @default(autoincrement())
+  ownerId     Int
+  name        String @db.VarChar(40)
+  shipClass   Int    @default(0)
+  armorId     Int
+  computerId  Int
+  shieldId    Int    @default(0)
+  engineId    Int
+  deviceIds   String @default("[]") @db.Text
+  weaponSlots String @default("[]") @db.Text
+
+  owner        Player             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  buildQueue   ShipBuildingQueue[]
+  dockedShips  DockedShip[]
+
+  @@index([ownerId])
+  @@map("ship_design")
+}
+
+model ShipBuildingQueue {
+  id        Int @id @default(autoincrement())
+  ownerId   Int
+  designId  Int
+  planetId  Int
+  count     Int @default(0)
+  progress  Int @default(0)
+  turnsLeft Int @default(0)
+
+  owner  Player     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  design ShipDesign @relation(fields: [designId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("ship_building_queue")
+}
+
+model DockedShip {
+  id       Int @id @default(autoincrement())
+  ownerId  Int
+  designId Int
+  fleetId  Int @default(0)
+  count    Int @default(0)
+
+  owner  Player     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  design ShipDesign @relation(fields: [designId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("docked_ship")
+}
+
+// ─── Defense ─────────────────────────────────────────────────────────────────
+
+model DefensePlan {
+  id        Int     @id @default(autoincrement())
+  ownerId   Int
+  planetId  Int
+  autoReply Boolean @default(false)
+
+  owner  Player        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  fleets DefenseFleet[]
+
+  @@unique([ownerId, planetId])
+  @@index([ownerId])
+  @@map("defense_plan")
+}
+
+model DefenseFleet {
+  id      Int @id @default(autoincrement())
+  planId  Int
+  fleetId Int
+
+  plan DefensePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@map("defense_fleet")
+}
+
+// ─── Game Status ─────────────────────────────────────────────────────────────
+
+model GameStatus {
+  id           Int      @id @default(1)
+  lastGameTime DateTime @default(now())
+  currentTurn  Int      @default(0)
+
+  @@map("game_status")
+}

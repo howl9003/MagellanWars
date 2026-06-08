@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+packages/*/dist/
+packages/client/dist/
+
+# Environment
+.env
+.env.local
+packages/server/.env
+
+# Prisma
+packages/server/node_modules/.prisma/
+
+# Logs
+*.log
+build.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Docker volumes (not committed)
+certbot/
+
+# Legacy build artifacts
+src/**/*.o
+src/**/*.a
+src/**/Makefile.depend
