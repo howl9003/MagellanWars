@@ -5,16 +5,22 @@ set -e
 
 cd "$(dirname "$0")"
 
-echo "=== Building images ==="
-docker compose build
+# Stop the old C++ stack if it's still running
+if docker compose ps --quiet 2>/dev/null | grep -q .; then
+    echo "=== Stopping legacy stack ==="
+    docker compose down
+fi
 
-echo "=== Starting services ==="
-docker compose up -d
+echo "=== Building new stack images (this takes a few minutes) ==="
+docker compose -f docker-compose.new.yml build
+
+echo "=== Starting new stack ==="
+docker compose -f docker-compose.new.yml up -d
 
 echo "=== Status ==="
-docker compose ps
+docker compose -f docker-compose.new.yml ps
 
 PUBLIC_IP=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "<your-server-ip>")
 echo ""
-echo "Game is live at:  http://${PUBLIC_IP}"
-echo "Register at:      http://${PUBLIC_IP}/register"
+echo "Game is live at:  https://${PUBLIC_IP}"
+echo "  (or https://playvibespace.online once DNS resolves)"

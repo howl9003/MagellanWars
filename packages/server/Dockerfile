@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/server/package.json ./packages/server/
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
@@ -26,7 +26,7 @@ RUN corepack enable pnpm
 COPY --from=builder /app/packages/server/dist ./dist
 COPY --from=builder /app/packages/server/node_modules ./node_modules
 COPY --from=builder /app/packages/server/prisma ./prisma
-RUN pnpm prisma generate
+RUN ./node_modules/.bin/prisma generate
 USER node
 EXPOSE 3000
 CMD ["sh", "-c", "node_modules/.bin/prisma db push --accept-data-loss && node dist/index.js"]
