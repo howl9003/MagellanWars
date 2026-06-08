@@ -144,6 +144,6 @@ export function raceResearchMultiplier(raceId: number, tree: 'social' | 'life' |
   };
   const key = map[tree];
   if (!key) return 1;
-  const pct = (race.control[key] as number | undefined) ?? 0;
+  const pct = race.control[key] ?? 0;
   return 1 + pct / 100;
 }

@@ -42,7 +42,7 @@ export function buildApp() {
   void app.register(websocket);
 
   // Health check
-  app.get('/health', async () => ({ status: 'ok', ts: new Date().toISOString() }));
+  app.get('/health', () => ({ status: 'ok', ts: new Date().toISOString() }));
 
   // API routes
   void app.register(authRoutes,       { prefix: '/api/auth' });

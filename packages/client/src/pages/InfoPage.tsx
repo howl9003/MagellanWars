@@ -53,7 +53,7 @@ export function InfoPage() {
   const fleetRanks = fleetRankData?.data ?? [];
   const councilRanks = councilRankData?.data ?? [];
   const clusters = clusterData?.data ?? [];
-  const techs = (techData?.data ?? []) as Tech[];
+  const techs = techData?.data ?? [];
   const filteredTechs = search ? techs.filter((t) => t.name.toLowerCase().includes(search.toLowerCase()) || t.tree.toLowerCase().includes(search.toLowerCase())) : techs;
 
   return (

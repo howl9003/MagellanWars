@@ -16,11 +16,14 @@ export const infoRoutes: FastifyPluginAsync = async (app) => {
     const limit = Math.min(100, parseInt(qs.limit ?? '50', 10));
     const by = qs.by ?? 'rating';
 
-    const orderField = ['rating', 'honor', 'production'].includes(by) ? by : 'rating';
+    const orderBy =
+      by === 'honor'      ? { honor: 'desc' as const } :
+      by === 'production' ? { production: 'desc' as const } :
+                            { rating: 'desc' as const };
     const players = await db.player.findMany({
       where: { isAi: false },
       take: limit,
-      orderBy: { [orderField]: 'desc' },
+      orderBy,
       select: { id: true, name: true, race: true, rating: true, honor: true, production: true, councilId: true },
     });
     return { data: players };
@@ -106,7 +109,7 @@ export const infoRoutes: FastifyPluginAsync = async (app) => {
       data: SHIP_CLASS_NAMES.map((name, i) => ({
         index: i,
         name,
-        baseHp: SHIP_CLASS_BASE_HP[i],
+        baseHp: SHIP_CLASS_BASE_HP[i] ?? 80,
       })),
     };
   });

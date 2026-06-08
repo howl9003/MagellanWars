@@ -123,7 +123,7 @@ export const shipRoutes: FastifyPluginAsync = async (app) => {
       data: SHIP_CLASS_NAMES.map((name, i) => ({
         index: i,
         name,
-        baseHp: SHIP_CLASS_BASE_HP[i],
+        baseHp: SHIP_CLASS_BASE_HP[i] ?? 80,
       })),
     };
   });

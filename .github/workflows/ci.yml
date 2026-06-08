@@ -39,6 +39,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: pnpm install --no-frozen-lockfile
+      - run: pnpm --filter @magellanwars/server db:generate
       - run: pnpm lint
 
   test:

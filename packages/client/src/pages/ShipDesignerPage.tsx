@@ -10,7 +10,7 @@ interface Design {
   deviceIds: string; weaponSlots: string;
 }
 interface QueueEntry { id: number; designId: number; count: number; turnsLeft: number; design: Design }
-interface DockedShip { id: number; designId: number; count: number; design: Design }
+interface DockedShip { id: number; designId: number; count: number; fleetId: number | null; design: Design }
 
 function sectionStyle(): React.CSSProperties {
   return { padding: 16, border: '1px solid #1f2d45', borderRadius: 4, marginBottom: 16 };

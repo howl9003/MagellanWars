@@ -158,13 +158,13 @@ export interface Column<T> {
   header: string;
   right?: boolean;
   width?: number | string;
-  render?: (row: T) => ReactNode;
+  render?: (row: T, index: number) => ReactNode;
 }
 
 function cellStr(v: unknown): string {
-  if (v == null) return '';
-  if (typeof v === 'object') return '';
-  return String(v);
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number' || typeof v === 'boolean' || typeof v === 'bigint') return String(v);
+  return '';
 }
 
 export function DataTable<T extends object>({ columns, rows, emptyMsg = 'No data.' }: {
@@ -191,7 +191,7 @@ export function DataTable<T extends object>({ columns, rows, emptyMsg = 'No data
             <tr key={i}>
               {columns.map((c) => (
                 <td key={c.key} className={c.right ? 'num' : ''}>
-                  {c.render ? c.render(row) : cellStr((row as Record<string, unknown>)[c.key])}
+                  {c.render ? c.render(row, i) : cellStr((row as Record<string, unknown>)[c.key])}
                 </td>
               ))}
             </tr>
