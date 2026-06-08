@@ -1,0 +1,28 @@
+# Per-Dockerfile ignore rules for the legacy C++ archspace build.
+# Docker checks Dockerfile.dockerignore before .dockerignore when building
+# with the default Dockerfile, so src/ is NOT excluded here.
+
+# Let's Encrypt certs
+certbot/
+
+# Build artifacts
+*.o
+build.log
+
+# Git internals
+.git/
+.github/
+
+# Local secrets
+*.pem
+.env
+packages/server/.env
+
+# Node installs (not needed for the C++ build)
+node_modules/
+packages/*/node_modules/
+
+# New-stack files (not needed for the C++ build)
+packages/
+docker-compose.new.yml
+nginx.new.conf
