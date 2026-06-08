@@ -1,0 +1,24 @@
+# Exclude from Docker build context
+
+# Let's Encrypt certs (root-owned, not needed at build time)
+certbot/
+
+# Legacy C++ source (not used by new TypeScript stack)
+src/
+
+# Build artifacts
+*.o
+build.log
+
+# Git
+.git/
+.github/
+
+# Local secrets
+*.pem
+.env
+packages/server/.env
+
+# Node local installs (server resolves inside container)
+node_modules/
+packages/*/node_modules/
