@@ -11,8 +11,8 @@ if docker compose ps --quiet 2>/dev/null | grep -q .; then
     docker compose down
 fi
 
-echo "=== Building new stack images (this takes a few minutes) ==="
-docker compose -f docker-compose.new.yml build
+echo "=== Building new stack images sequentially (avoids OOM on small instances) ==="
+docker compose -f docker-compose.new.yml build --no-parallel
 
 echo "=== Starting new stack ==="
 docker compose -f docker-compose.new.yml up -d
