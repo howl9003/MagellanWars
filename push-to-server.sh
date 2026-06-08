@@ -28,6 +28,11 @@ tar --exclude='.git' \
 echo "Upload complete."
 
 echo ""
+echo "=== Fixing line endings on shell scripts ==="
+ssh $SSH_OPTS ${SSH_USER}@${SERVER_IP} \
+  "find ${REMOTE_DIR} -name '*.sh' | xargs sed -i 's/\r//g'"
+
+echo ""
 echo "=== Running server setup (first time only) ==="
 ssh $SSH_OPTS ${SSH_USER}@${SERVER_IP} \
   "sudo bash ${REMOTE_DIR}/server-setup.sh"
