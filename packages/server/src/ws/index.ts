@@ -1,8 +1,12 @@
 import { Server as SocketIOServer } from 'socket.io';
 import type { Server as HttpServer } from 'node:http';
-import type { ServerToClientEvents, ClientToServerEvents } from '@magellanwars/shared';
+import type { ServerToClientEvents, ClientToServerEvents, Fleet } from '@magellanwars/shared';
 
-type FleetSetMissionPayload = Parameters<ClientToServerEvents['fleet:setMission']>[0];
+interface FleetSetMissionPayload {
+  fleetId: number;
+  mission: Fleet['mission'];
+  target?: number;
+}
 
 export function createSocketServer(httpServer: HttpServer, clientOrigin: string) {
   const io = new SocketIOServer<ClientToServerEvents, ServerToClientEvents>(httpServer, {
