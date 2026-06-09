@@ -99,7 +99,8 @@ export const empireRoutes: FastifyPluginAsync = async (app) => {
   app.post('/planets/:id/build', async (request, reply) => {
     const { playerId } = getPayload(request);
     const { id } = request.params as { id: string };
-    const body = buildSchema.safeParse({ ...request.body, planetId: parseInt(id, 10) });
+    const requestBody = typeof request.body === 'object' && request.body !== null ? request.body : {};
+    const body = buildSchema.safeParse({ ...requestBody, planetId: parseInt(id, 10) });
     if (!body.success) return reply.status(400).send({ error: 'Invalid input', code: 'VALIDATION_ERROR' });
 
     const planet = await prisma.planet.findUnique({ where: { id: parseInt(id, 10) } });

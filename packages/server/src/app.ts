@@ -19,6 +19,11 @@ import { spyRoutes } from './routes/spy.js';
 import { warRoutes } from './routes/war.js';
 import { projectRoutes } from './routes/project.js';
 import { infoRoutes } from './routes/info.js';
+import { prisma } from './db/index.js';
+import { getSchedulerStatus } from './game/scheduler.js';
+
+const DEFAULT_JWT_SECRET = 'change-me-in-production';
+const READINESS_TIMEOUT_MS = 2_000;
 
 export function buildApp() {
   const app = Fastify({
@@ -35,14 +40,34 @@ export function buildApp() {
   });
 
   void app.register(jwt, {
-    secret: process.env['JWT_SECRET'] ?? 'change-me-in-production',
+    secret: getJwtSecret(),
     sign: { expiresIn: '7d' },
   });
 
   void app.register(websocket);
 
-  // Health check
-  app.get('/health', () => ({ status: 'ok', ts: new Date().toISOString() }));
+  app.get('/health', () => ({
+    status: 'ok',
+    uptimeSeconds: Math.round(process.uptime()),
+    scheduler: getSchedulerStatus(),
+    ts: new Date().toISOString(),
+  }));
+
+  app.get('/ready', async (_request, reply) => {
+    const db = await checkDatabase();
+    const body = {
+      status: db.status === 'ok' ? 'ready' : 'not_ready',
+      db,
+      scheduler: getSchedulerStatus(),
+      ts: new Date().toISOString(),
+    };
+
+    if (db.status !== 'ok') {
+      return reply.code(503).send(body);
+    }
+
+    return body;
+  });
 
   // API routes
   void app.register(authRoutes,       { prefix: '/api/auth' });
@@ -63,4 +88,50 @@ export function buildApp() {
   void app.register(infoRoutes,       { prefix: '/api/info' });
 
   return app;
+}
+
+function getJwtSecret(): string {
+  const secret = process.env['JWT_SECRET'] ?? DEFAULT_JWT_SECRET;
+
+  if (process.env['NODE_ENV'] === 'production' && secret === DEFAULT_JWT_SECRET) {
+    throw new Error('JWT_SECRET must be set to a non-default value in production.');
+  }
+
+  return secret;
+}
+
+async function checkDatabase() {
+  const startedAt = Date.now();
+
+  try {
+    await withTimeout(prisma.$queryRaw`SELECT 1`, READINESS_TIMEOUT_MS, 'Database readiness check timed out.');
+    return { status: 'ok' as const, latencyMs: Date.now() - startedAt };
+  } catch (err: unknown) {
+    return {
+      status: 'error' as const,
+      latencyMs: Date.now() - startedAt,
+      error: formatHealthError(err),
+    };
+  }
+}
+
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+  let timeout: NodeJS.Timeout | undefined;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error(message)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+  }
+}
+
+function formatHealthError(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }
