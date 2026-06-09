@@ -14,6 +14,8 @@ const RELATION = {
   ALLIANCE: 4,
 } as const;
 
+type RelationCode = (typeof RELATION)[keyof typeof RELATION];
+
 // Diplomatic action types
 const ACTION = {
   DECLARE_WAR: 1,
@@ -98,7 +100,7 @@ export const diplomacyRoutes: FastifyPluginAsync = async (app) => {
       },
     });
 
-    let newRelation = RELATION.NEUTRAL;
+    let newRelation: RelationCode = RELATION.NEUTRAL;
     switch (action) {
       case ACTION.DECLARE_WAR:       newRelation = RELATION.WAR;      break;
       case ACTION.OFFER_TRUCE:       newRelation = RELATION.TRUCE;    break;
@@ -212,7 +214,7 @@ export const diplomacyRoutes: FastifyPluginAsync = async (app) => {
       return reply.status(429).send({ error: 'Council action cooldown active', code: 'COOLDOWN' });
     }
 
-    let newRelation = RELATION.NEUTRAL;
+    let newRelation: RelationCode = RELATION.NEUTRAL;
     switch (body.data.action) {
       case ACTION.DECLARE_WAR:    newRelation = RELATION.WAR;      break;
       case ACTION.OFFER_TRUCE:    newRelation = RELATION.TRUCE;    break;

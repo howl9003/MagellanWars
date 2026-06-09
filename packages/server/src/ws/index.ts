@@ -2,13 +2,15 @@ import { Server as SocketIOServer } from 'socket.io';
 import type { Server as HttpServer } from 'node:http';
 import type { ServerToClientEvents, ClientToServerEvents } from '@magellanwars/shared';
 
+type FleetSetMissionPayload = Parameters<ClientToServerEvents['fleet:setMission']>[0];
+
 export function createSocketServer(httpServer: HttpServer, clientOrigin: string) {
   const io = new SocketIOServer<ClientToServerEvents, ServerToClientEvents>(httpServer, {
     cors: { origin: clientOrigin, credentials: true },
   });
 
   io.on('connection', (socket) => {
-    socket.on('fleet:setMission', async (data) => {
+    socket.on('fleet:setMission', async (data: FleetSetMissionPayload) => {
       // TODO: validate auth token, call game service, emit updated fleet
       io.emit('fleet:updated', {
         ownerId: 0,

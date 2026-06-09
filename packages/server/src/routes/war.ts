@@ -143,7 +143,7 @@ export const warRoutes: FastifyPluginAsync = async (app) => {
     const { playerId } = requireAuthPayload(req);
     const body = BlockadeBody.parse(req.body);
 
-    const [attacker, defender] = await Promise.all([
+    const [, defender] = await Promise.all([
       db.player.findUniqueOrThrow({ where: { id: playerId } }),
       db.player.findUnique({ where: { id: body.targetPlayerId } }),
     ]);
@@ -167,7 +167,7 @@ export const warRoutes: FastifyPluginAsync = async (app) => {
     const { playerId } = requireAuthPayload(req);
     const body = PrivateerBody.parse(req.body);
 
-    const [attacker, target] = await Promise.all([
+    const [, target] = await Promise.all([
       db.player.findUniqueOrThrow({ where: { id: playerId } }),
       db.player.findUnique({ where: { id: body.targetPlayerId } }),
     ]);

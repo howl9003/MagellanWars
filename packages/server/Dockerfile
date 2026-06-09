@@ -24,9 +24,14 @@ RUN pnpm --filter @magellanwars/server build
 FROM node:22-alpine AS runner
 WORKDIR /app
 RUN corepack enable pnpm
-COPY --from=builder /app/packages/server/dist ./dist
-COPY --from=builder /app/packages/server/node_modules ./node_modules
-COPY --from=builder /app/packages/server/prisma ./prisma
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/shared/package.json ./packages/shared/package.json
+COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
+COPY --from=builder /app/packages/server/package.json ./packages/server/package.json
+COPY --from=builder /app/packages/server/node_modules ./packages/server/node_modules
+COPY --from=builder /app/packages/server/dist ./packages/server/dist
+COPY --from=builder /app/packages/server/prisma ./packages/server/prisma
+WORKDIR /app/packages/server
 RUN ./node_modules/.bin/prisma generate
 USER node
 EXPOSE 3000
